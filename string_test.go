@@ -42,20 +42,24 @@ func ExampleString_UnmarshalJSON() {
 		a null.String
 		b null.String
 		c null.String
+		d null.String
 	)
 
 	json.Unmarshal([]byte(`"asd"`), &a)
 	json.Unmarshal([]byte(`null`), &b)
 	json.Unmarshal([]byte(`""`), &c)
+	json.Unmarshal(nil, &d)
 
 	fmt.Printf("a: valid: `%v`, string: `%s`\n", a.Valid, a.String)
 	fmt.Printf("b: valid: `%v`, string: `%s`\n", b.Valid, b.String)
 	fmt.Printf("c: valid: `%v`, string: `%s`\n", c.Valid, c.String)
+	fmt.Printf("d: valid: `%v`, string: `%s`\n", d.Valid, d.String)
 
 	// Output:
 	// a: valid: `true`, string: `asd`
 	// b: valid: `false`, string: ``
 	// c: valid: `false`, string: ``
+	// d: valid: `false`, string: ``
 }
 
 func TestNewString(t *testing.T) {
@@ -252,6 +256,11 @@ func TestString_UnmarshalJSON(t *testing.T) {
 		{
 			"blank string",
 			[]byte(`""`),
+			null.String{String: "", Valid: false},
+		},
+		{
+			"nil bytes",
+			nil,
 			null.String{String: "", Valid: false},
 		},
 	}

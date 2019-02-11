@@ -39,7 +39,9 @@ func (nt String) MarshalJSON() ([]byte, error) {
 }
 
 func (nt *String) UnmarshalJSON(data []byte) error {
-	if err := json.Unmarshal(data, &nt.String); err != nil {
+	if data == nil {
+		nt.String = ""
+	} else if err := json.Unmarshal(data, &nt.String); err != nil {
 		return err
 	}
 	nt.Valid = nt.String != ""
