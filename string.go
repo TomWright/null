@@ -3,6 +3,7 @@ package null
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 )
 
 // String represents a string that may be null.
@@ -17,9 +18,20 @@ type String struct {
 }
 
 func (nt *String) Scan(value interface{}) error {
-	nt.String, nt.Valid = value.(string)
-	if nt.String == "" {
+	if value == nil {
+		nt.String = ""
 		nt.Valid = false
+		return nil
+	}
+	switch v := value.(type) {
+	case string:
+		nt.String = v
+		nt.Valid = nt.String != ""
+	case []byte:
+		nt.String = string(v)
+		nt.Valid = nt.String != ""
+	default:
+		return fmt.Errorf("unable to scan into null.String from type %T", value)
 	}
 	return nil
 }

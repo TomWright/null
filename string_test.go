@@ -167,6 +167,11 @@ func TestString_Scan(t *testing.T) {
 			"a",
 			null.String{String: "a", Valid: true},
 		},
+		{
+			"byte value",
+			[]byte("a"),
+			null.String{String: "a", Valid: true},
+		},
 	}
 
 	for _, testCase := range tests {
