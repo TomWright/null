@@ -12,45 +12,51 @@ import (
 // so it can be used to read and write null
 // values.
 type Time struct {
-	Time  time.Time
-	Valid bool
+	time.Time
+}
+
+// NewTime returns a Time containing the given time.Time.
+func NewTime(t time.Time) Time {
+	return Time{
+		Time: t,
+	}
+}
+
+// Valid returns true if the time.Time contained within Time is
+// a non-zero time object.
+func (nt *Time) Valid() bool {
+	return !nt.IsZero()
 }
 
 // Scan implements the Scanner interface.
 func (nt *Time) Scan(value interface{}) error {
-	nt.Time, nt.Valid = value.(time.Time)
-	if nt.Valid && nt.Time.IsZero() {
-		nt.Valid = false
+	var valid bool
+	nt.Time, valid = value.(time.Time)
+	if !valid {
+		nt.Time = time.Time{}
 	}
 	return nil
 }
 
 // Value implements the driver Valuer interface.
 func (nt Time) Value() (driver.Value, error) {
-	if !nt.Valid {
+	if !nt.Valid() {
 		return nil, nil
 	}
 	return nt.Time, nil
 }
 
-// TimeOrZero returns either a valid time.Time, or a zero-value
-// time.Time object.
-func (nt Time) TimeOrZero() time.Time {
-	if !nt.Valid {
-		return time.Time{}
-	}
-	return nt.Time
-}
-
 // MarshalJSON returns either a marshal'd time.Time if it was
 // valid, or a marshal'd NULL value if it was not valid.
 func (nt Time) MarshalJSON() ([]byte, error) {
-	if !nt.Valid {
+	if !nt.Valid() {
 		return json.Marshal(nil)
 	}
 	return json.Marshal(nt.Time)
 }
 
+// UnmarshalJSON attempts to unmarshal the given bytes
+// into a Time object.
 func (nt *Time) UnmarshalJSON(data []byte) error {
 	var t time.Time
 	if data != nil {
@@ -59,13 +65,5 @@ func (nt *Time) UnmarshalJSON(data []byte) error {
 		}
 	}
 	nt.Time = t
-	nt.Valid = !t.IsZero()
 	return nil
-}
-
-func NewTime(t time.Time) Time {
-	return Time{
-		Time:  t,
-		Valid: !t.IsZero(),
-	}
 }
