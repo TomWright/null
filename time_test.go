@@ -342,3 +342,23 @@ func TestTime_UnmarshalJSON(t *testing.T) {
 		}
 	})
 }
+
+func TestTime_Add(t *testing.T) {
+	t.Run("does not modify value by reference", func(t *testing.T) {
+		a := null.NewTime(time.Date(2019, 01, 01, 12, 00, 00, 0, time.UTC))
+
+		if exp, got := "2019-01-01T12:00:00Z", a.Format(time.RFC3339); exp != got {
+			t.Errorf("expected time `%s`, got `%s`", exp, got)
+		}
+
+		b := a.Add(time.Second)
+
+		if exp, got := "2019-01-01T12:00:00Z", a.Format(time.RFC3339); exp != got {
+			t.Errorf("expected time `%s`, got `%s`", exp, got)
+		}
+
+		if exp, got := "2019-01-01T12:00:01Z", b.Format(time.RFC3339); exp != got {
+			t.Errorf("expected time `%s`, got `%s`", exp, got)
+		}
+	})
+}
