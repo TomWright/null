@@ -40,6 +40,10 @@ func ExampleTime_Scan() {
 	// c: valid: `true`, time: `2019-01-01T12:00:00Z`
 }
 
+// ExampleTime_MarshalJSON shows how different values will be marshal'd to JSON.
+// Notice that `a` stats off as an invalid value and is output as `null`, but
+// after adding a second to the time it then becomes valid and is output as
+// a time string.
 func ExampleTime_MarshalJSON() {
 	a := null.NewTime(time.Time{})
 	b := null.NewTime(time.Date(2019, 01, 01, 12, 00, 00, 0, time.UTC))
@@ -48,11 +52,17 @@ func ExampleTime_MarshalJSON() {
 	bBytes, _ := json.Marshal(b)
 
 	fmt.Printf("a: %s\n", string(aBytes))
-	fmt.Printf("b: %s", string(bBytes))
+	fmt.Printf("b: %s\n", string(bBytes))
+
+	a.Time = a.Add(time.Second)
+	aBytes, _ = json.Marshal(a)
+
+	fmt.Printf("a after add: %s", string(aBytes))
 
 	// Output:
 	// a: null
 	// b: "2019-01-01T12:00:00Z"
+	// a after add: "0001-01-01T00:00:01Z"
 }
 
 func ExampleTime_UnmarshalJSON() {
