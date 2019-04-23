@@ -41,7 +41,7 @@ func ExampleTime_Scan() {
 }
 
 // ExampleTime_MarshalJSON shows how different values will be marshal'd to JSON.
-// Notice that `a` stats off as an invalid value and is output as `null`, but
+// Notice that `a` starts off as an invalid value and is output as `null`, but
 // after adding a second to the time it then becomes valid and is output as
 // a time string.
 func ExampleTime_MarshalJSON() {
