@@ -54,7 +54,7 @@ func ExampleTime_MarshalJSON() {
 	fmt.Printf("a: %s\n", string(aBytes))
 	fmt.Printf("b: %s\n", string(bBytes))
 
-	a.Time = a.Add(time.Second)
+	a = a.Add(time.Second)
 	aBytes, _ = json.Marshal(a)
 
 	fmt.Printf("a after add: %s", string(aBytes))
@@ -132,12 +132,12 @@ func TestTime_Value(t *testing.T) {
 		{
 			"valid value after processing",
 			time.Date(0001, 01, 01, 00, 00, 01, 0, time.UTC),
-			null.NewTime(time.Time{}.Add(time.Second)),
+			null.NewTime(time.Time{}).Add(time.Second),
 		},
 		{
 			"nil value after processing",
 			nil,
-			null.NewTime(time.Date(0001, 01, 01, 00, 00, 01, 0, time.UTC).Add(-time.Second)),
+			null.NewTime(time.Date(0001, 01, 01, 00, 00, 01, 0, time.UTC)).Add(-time.Second),
 		},
 		{
 			"filled value",
@@ -170,39 +170,27 @@ func TestTime_Valid(t *testing.T) {
 	tests := []struct {
 		desc string
 		exp  bool
-		val  func() null.Time
+		val  null.Time
 	}{
 		{
 			"blank value",
 			false,
-			func() null.Time {
-				return null.NewTime(time.Time{})
-			},
+			null.NewTime(time.Time{}),
 		},
 		{
 			"valid value",
 			true,
-			func() null.Time {
-				return null.NewTime(time.Now())
-			},
+			null.NewTime(time.Now()),
 		},
 		{
 			"valid value after adding to invalid value",
 			true,
-			func() null.Time {
-				x := null.NewTime(time.Time{})
-				x.Time = x.Add(time.Second)
-				return x
-			},
+			null.NewTime(time.Time{}).Add(time.Second),
 		},
 		{
 			"invalid value after removing from valid value",
 			false,
-			func() null.Time {
-				x := null.NewTime(time.Date(01, 01, 01, 0, 0, 1, 0, time.UTC))
-				x.Time = x.Add(-time.Second)
-				return x
-			},
+			null.NewTime(time.Date(01, 01, 01, 0, 0, 1, 0, time.UTC)).Add(-time.Second),
 		},
 	}
 
@@ -211,9 +199,7 @@ func TestTime_Valid(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			t.Parallel()
 
-			val := tc.val()
-
-			if exp, got := tc.exp, val.Valid(); exp != got {
+			if exp, got := tc.exp, tc.val.Valid(); exp != got {
 				t.Errorf("expected `%v`, got `%v`", exp, got)
 			}
 		})
