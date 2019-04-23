@@ -19,9 +19,9 @@ The following types are available:
 
 # Determining validity
 
-Each struct within the package has a property named `Valid`. `Valid` will be `true` if the provided value was present and not empty.
-When retreiving a value from the struct, a `null` should be used whenever `Valid` is `false`.
+Each struct within the package has a property or func named `Valid`. `Valid` will be `true` if the provided value was present and not empty.
+When retrieving a value from the struct, a `null` should be used whenever `Valid` is `false`.
 
 # Additional types
 
-Additonal types will be added/maintained as needed or as requested. Feel free to submit any pull request you find useful or necessary.
+Additional types will be added/maintained as needed or as requested. Feel free to submit any pull request you find useful or necessary.
